@@ -18,9 +18,21 @@
   color: white;
 }
 
-.main {
+.main-container {
   flex: 1;
+  display: flex;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.main-content {
   padding: 16px 24px;
+  width: 100%;
+  transition: all 0.3s;
+}
+
+.main-show-sidebar {
+  width: calc(100% - 250px);
 }
 
 .list {
@@ -50,7 +62,6 @@
   padding: 8px;
   width: 100%;
   height: 150px;
-  background-color: #b5f5ec;
 }
 
 .new {
@@ -63,4 +74,60 @@
   height: 24px;
   background-color: red;
   color: white;
+}
+
+.sidebar-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+  overflow: hidden;
+}
+
+.sidebar-show {
+  width: 100%;
+}
+
+.sidebar-container {
+  position: fixed;
+  top: 0;
+  left: -250px;
+  height: 100vh;
+  width: 250px;
+  background-color: cadetblue;
+  z-index: 99;
+  transition: all 0.3s;
+}
+
+.sidebar-show .sidebar-container {
+  left: 0;
+}
+
+.sidebar-content {
+  display: flex;
+  justify-content: space-between;
+}
+
+.sidebar-outside {
+  width: calc(100% - 250px);
+  height: 100vh;
+}
+
+.right-sidebar-container {
+  position: fixed;
+  top: 56px;
+  right: -250px;
+  padding: 16px;
+  width: 250px;
+  height: calc(100% - 96px);
+  background-color: cadetblue;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.right-sidebar-show {
+  right: 0;
 }
