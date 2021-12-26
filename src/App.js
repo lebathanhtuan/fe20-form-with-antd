@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Input } from "antd";
+import { Form, Input, InputNumber, Button, Card, Checkbox } from "antd";
 import "./App.css";
 
 import Header from "./Header";
@@ -14,24 +14,7 @@ function App() {
   const [isShowLeftSidebar, setIsShowLeftSidebar] = useState(false);
   const [isShowRightSidebar, setIsShowRightSidebar] = useState(false);
 
-  const [registerForm, setRegisterForm] = useState({
-    name: "",
-    address: "",
-    phone: "",
-    note: "",
-    gender: "male",
-    options: [],
-    agree: false,
-  });
-
-  const [registerError, setRegisterError] = useState({
-    name: "",
-    address: "",
-  });
-
-  const fullName = "Thanh Tuấn";
-
-  const productList = [
+  const [productList, setProductList] = useState([
     {
       name: "iPhone 12",
       price: 15000000,
@@ -82,48 +65,12 @@ function App() {
       price: 18000000,
       isNew: false,
     },
-  ];
+  ]);
 
-  const handleRegister = () => {
-    let isValid = true;
-    let error = {};
-    if (!registerForm.name) {
-      error.name = "Name is required";
-      isValid = false;
-    } else {
-      error.name = "";
-    }
+  const fullName = "Thanh Tuấn";
 
-    if (!registerForm.address) {
-      error.address = "Address is required";
-      isValid = false;
-    } else {
-      error.address = "";
-    }
-
-    if (isValid) {
-      console.log(registerForm);
-    } else {
-      setRegisterError(error);
-    }
-  };
-
-  const handleChange = (e) => {
-    const { name, value, checked } = e.target;
-    setRegisterForm({
-      ...registerForm,
-      [name]: name === "agree" ? checked : value,
-    });
-  };
-
-  const handleOptionChange = (e) => {
-    const { value, checked } = e.target;
-    setRegisterForm({
-      ...registerForm,
-      options: checked
-        ? [...registerForm.options, value]
-        : registerForm.options.filter((item) => item !== value),
-    });
+  const handleAddProduct = (values) => {
+    setProductList([...productList, values]);
   };
 
   const renderProductList = () => {
@@ -171,100 +118,73 @@ function App() {
           <h2>Danh sách sản phẩm</h2>
           <div className="list">{renderProductList()}</div>
 
-          <h2>Form đăng ký</h2>
-          <form>
-            <div>
-              <label htmlFor="name">Name: </label>
-              <Input
-                id="name"
+          <h2>Form tạo sản phẩm</h2>
+          <Card style={{ width: 300, margin: "0 auto" }}>
+            <Form
+              name="createProductForm"
+              layout="vertical"
+              initialValues={{
+                name: "",
+                price: 0,
+                isNew: false,
+              }}
+              onFinish={(values) => handleAddProduct(values)}
+            >
+              <Form.Item
+                label="Tên sản phẩm"
                 name="name"
-                placeholder="Họ và tên"
-                onChange={(e) => handleChange(e)}
-              />
-              <div>{registerError.name}</div>
-            </div>
-            <div>
-              <label htmlFor="address">Địa chỉ: </label>
-              <input
-                id="address"
-                name="address"
-                placeholder="Địa chỉ"
-                onChange={(e) => handleChange(e)}
-              />
-              <div>{registerError.address}</div>
-            </div>
-            <div>
-              <label htmlFor="phone">Số điện thoại: </label>
-              <input
-                id="phone"
-                name="phone"
-                placeholder="Số điện thoại"
-                onChange={(e) => handleChange(e)}
-              />
-            </div>
-            <div>
-              <label htmlFor="note">Ghi chú: </label>
-              <textarea
-                id="note"
-                name="note"
-                placeholder="Ghi chú"
-                onChange={(e) => handleChange(e)}
-              />
-            </div>
-            <div>
-              <input
-                type="radio"
-                name="gender"
-                value="male"
-                checked={registerForm.gender === "male"}
-                onChange={(e) => handleChange(e)}
-              />
-              Male
-              <input
-                type="radio"
-                name="gender"
-                value="female"
-                checked={registerForm.gender === "female"}
-                onChange={(e) => handleChange(e)}
-              />
-              Female
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                name="options"
-                value="option 1"
-                onChange={(e) => handleOptionChange(e)}
-              />
-              Option 1
-              <input
-                type="checkbox"
-                name="options"
-                value="option 2"
-                onChange={(e) => handleOptionChange(e)}
-              />
-              Option 2
-              <input
-                type="checkbox"
-                name="options"
-                value="option 3"
-                onChange={(e) => handleOptionChange(e)}
-              />
-              Option 3
-            </div>
-            <div>
-              <input
-                type="checkbox"
-                name="agree"
-                onChange={(e) => handleChange(e)}
-              />
-              Đồng ý điều khoản
-            </div>
+                rules={[
+                  {
+                    required: true,
+                    message: "Bạn chưa nhập tên sản phẩm!",
+                  },
+                  {
+                    min: 4,
+                    message: "Tên sản phẩm phải có ít nhất 4 ký tự!",
+                  },
+                  {
+                    max: 50,
+                    message: "Tên sản phẩm không được vượt quá 50 ký tự!",
+                  },
+                ]}
+              >
+                <Input />
+              </Form.Item>
 
-            <button type="button" onClick={() => handleRegister()}>
-              Đăng ký
-            </button>
-          </form>
+              <Form.Item
+                label="Giá sản phẩm"
+                name="price"
+                getValueProps={(value) => parseInt(value)}
+                rules={[
+                  {
+                    required: true,
+                    message: "Bạn chưa nhập giá sản phẩm!",
+                  },
+                  {
+                    type: "number",
+                    min: 10000,
+                    message: "Giá sản phẩm phải lớn hơn 10.000₫!",
+                  },
+                ]}
+              >
+                <InputNumber
+                  formatter={(value) =>
+                    `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+                  }
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, "")}
+                  style={{ width: "100%" }}
+                />
+              </Form.Item>
+
+              <Form.Item name="isNew" valuePropName="checked">
+                <Checkbox>Is New</Checkbox>
+              </Form.Item>
+
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
+            </Form>
+          </Card>
         </div>
         <RightSidebar isShowRightSidebar={isShowRightSidebar} />
       </div>
